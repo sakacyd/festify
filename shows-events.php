@@ -112,12 +112,12 @@ https://www.tooplate.com/view/2125-artxibition
                                     <div class="col-lg-8">
                                         <ul>
                                           <li><a href='#tabs-1'>Upcoming</a></li>
-                                          <li><a href='#tabs-2'>Past</a></a></li>
+                                          <li><a href='#tabs-2'>Past</a></li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-4">
                                           <div class="main-dark-button">
-                                              <a href="tickets.html">Purchase Tickets</a>
+                                              <a href="tickets.php">Purchase Tickets</a>
                                           </div>
                                     </div>
                                 </div>
