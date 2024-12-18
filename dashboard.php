@@ -3,7 +3,7 @@ session_start();
 
 // Pastikan pengguna sudah login
 if (!isset($_SESSION['user'])) {
-    header("Location: login.html");
+    header("Location: login.php");
     exit();
 }
 
@@ -29,9 +29,9 @@ $user_name = $_SESSION['user']['name'];
             <nav class="main-nav">
                 <a href="index.html" class="logo">Fest<em>ify</em></a>
                 <ul class="nav">
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="dashboard.php">Home</a></li>
                     <li><a href="tickets.html">Tickets</a></li>
-                    <li><a href="account.html" class="active">My Account</a></li>
+                    <li><a href="myaccount.php" class="active">My Account</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
                 <a class="menu-trigger">
@@ -62,7 +62,7 @@ $user_name = $_SESSION['user']['name'];
                         <h4>Navigation</h4>
                         <ul>
                             <li><a href="tickets.html"><i class="fa fa-ticket"></i> My Tickets</a></li>
-                            <li><a href="account.html"><i class="fa fa-user"></i> Account Settings</a></li>
+                            <li><a href="account.php"><i class="fa fa-user"></i> Account Settings</a></li>
                             <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                         </ul>
                     </div>
