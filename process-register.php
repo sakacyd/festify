@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt->execute()) {
         $_SESSION["success"] = "Registration successful! You can now log in.";
-        header("Location: login.html");
+        header("Location: login.php");
     } else {
         $_SESSION["error"] = "Email already exists. Please use another email.";
         header("Location: register.html");
