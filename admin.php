@@ -86,8 +86,33 @@ $events = $conn->query("SELECT * FROM event");
                                 <input type="text" class="form-control" name="kota_venue" id="editKotaVenue" required>
                             </div>
                             <button type="submit" name="update_venue" class="btn btn-primary">Update Venue</button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteVenueModal" data-id="<?php echo $venue['id_venue']; ?>">Delete</button>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Hapus Venue -->
+        <div class="modal fade" id="deleteVenueModal" tabindex="-1" role="dialog" aria-labelledby="deleteVenueModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteVenueModalLabel">Hapus Venue</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="process_delete.php" method="POST">
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus venue ini?</p>
+                            <input type="hidden" name="id_venue" id="deleteVenueId">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                            <button type="submit" name="delete_venue" class="btn btn-danger">Hapus</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -117,7 +142,7 @@ $events = $conn->query("SELECT * FROM event");
         </table>
 
         <h3>Tambah Event</h3>
-        <form method="POST" action="process_add_event.php">
+        <form method="POST" action="process_add_event.php" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="nama_event">Nama Event</label>
                 <input type="text" class="form-control" name="nama_event" required>
@@ -129,7 +154,7 @@ $events = $conn->query("SELECT * FROM event");
             <div class="form-group">
                 <label for="id_venue">Nama Venue</label>
                 <select class="form-control" name="id_venue" required>
-                    <option value="" disabled selected>Pilih Venue</option> <!-- Opsi default -->
+                    <option value="" disabled selected>Pilih Venue</option>
                     <?php
                     // Ambil data venue untuk dropdown
                     $venues = $conn->query("SELECT * FROM venue");
@@ -138,10 +163,22 @@ $events = $conn->query("SELECT * FROM event");
                             <option value="<?php echo $venue['id_venue']; ?>"><?php echo $venue['nama_venue']; ?></option>
                     <?php endwhile;
                     } else {
-                        echo '<option value="">Tidak ada venue tersedia</option>'; // Pesan jika tidak ada venue
+                        echo '<option value="">Tidak ada venue tersedia</option>';
                     }
                     ?>
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="deskripsi">Deskripsi Event</label>
+                <textarea class="form-control" name="deskripsi" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="harga_tiket">Harga Tiket</label>
+                <input type="number" class="form-control" name="harga_tiket" required>
+            </div>
+            <div class="form-group">
+                <label for="gambar_event">Upload Gambar Event</label>
+                <input type="file" class="form-control" name="gambar_event" accept="image/*" required>
             </div>
             <button type="submit" name="submit_event" class="btn btn-primary">Tambah Event</button>
         </form>
@@ -179,6 +216,7 @@ $events = $conn->query("SELECT * FROM event");
                                 </select>
                             </div>
                             <button type="submit" name="update_event" class="btn btn-primary">Update Event</button>
+                            <button type="submit" name="delete_event" class="btn btn-danger float-right">Delete Event</button>
                         </form>
                     </div>
                 </div>
@@ -237,6 +275,17 @@ $events = $conn->query("SELECT * FROM event");
                 $('#editIdVenue').val(venueId);
                 $('#editEventModal').modal('show');
             });
+        });
+
+        // Mengisi ID Venue ke Modal Hapus
+        $('#deleteVenueModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Tombol yang memicu modal
+            var idVenue = button.data('id'); // Ambil ID dari data-id atribut
+            var modal = $(this);
+            modal.find('#deleteVenueId').val(idVenue);
+
+            // Debugging: Tampilkan ID di console
+            console.log("ID Venue yang akan dihapus: " + idVenue);
         });
     </script>
 </body>
