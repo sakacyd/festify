@@ -50,10 +50,19 @@ function uploadImage($file)
 }
 ?>
 
+<div class="page-heading-shows-events">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Admin Dashboard</h2>
+                <span>Control all shows & events.</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <body>
     <div class="container">
-        <h1>Admin Dashboard</h1>
-
         <h2>Input Venue</h2>
         <form method="POST">
             <div class="form-group">
@@ -62,7 +71,7 @@ function uploadImage($file)
             </div>
             <div class="form-group">
                 <label for="kota_venue">Kota Venue</label>
-                < input type="text" class="form-control" name="kota_venue" required>
+                <input type="text" class="form-control" name="kota_venue" required>
             </div>
             <button type="submit" name="submit_venue" class="btn btn-primary">Submit Venue</button>
         </form>
