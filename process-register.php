@@ -3,13 +3,13 @@ session_start();
 require 'db.php'; // Panggil file koneksi database
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = trim($_POST["name"]);
+    $nama_lengkap = trim($_POST["nama_lengkap"]);
     $email = trim($_POST["email"]);
     $password = trim($_POST["password"]);
     $confirmPassword = trim($_POST["confirm-password"]);
 
     // Validasi input
-    if (empty($name) || empty($email) || empty($password) || empty($confirmPassword)) {
+    if (empty($nama_lengkap) || empty($email) || empty($password) || empty($confirmPassword)) {
         $_SESSION["error"] = "All fields are required.";
         header("Location: register.html");
         exit();
@@ -31,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // Simpan ke database
-    $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $name, $email, $hashedPassword);
+    $stmt = $conn->prepare("INSERT INTO akun (nama_lengkap, email, password) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $nama_lengkap, $email, $hashedPassword);
 
     if ($stmt->execute()) {
         $_SESSION["success"] = "Registration successful! You can now log in.";

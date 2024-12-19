@@ -14,18 +14,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Ambil data pengguna dari database
-    $stmt = $conn->prepare("SELECT id, name, password FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id_akun, nama_lengkap, password, role FROM akun WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $stmt->bind_result($user_id, $name, $hashedPassword);
+    $stmt->bind_result($id_user, $nama_lengkap, $hashedPassword, $role);
 
     if ($stmt->fetch()) {
         if (password_verify($password, $hashedPassword)) {
             // Simpan data ke session
             $_SESSION['user'] = [
-                'id' => $user_id,
-                'name' => $name,
-                'email' => $email
+                'id_user' => $id_user,
+                'nama_lengkap' => $nama_lengkap,
+                'email' => $email,
+                'role' => $role
             ];
 
             // Debug session
@@ -33,7 +34,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             print_r($_SESSION['user']);
             echo "</pre>";
 
-            header("Location: dashboard.php");
+            // Arahkan berdasarkan role
+            if ($role === 'admin') {
+                $_SESSION['admin_logged_in'] = true;
+                header("Location: admin.php");
+            } else {
+                header("Location: dashboard.php");
+            }
             exit();
         } else {
             $_SESSION["error"] = "Incorrect password.";
@@ -47,4 +54,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conn->close();
 }
-?>
