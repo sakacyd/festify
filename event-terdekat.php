@@ -6,7 +6,7 @@ $sql = "SELECT e.*, v.nama_venue
         JOIN venue v ON e.id_venue = v.id_venue 
         WHERE e.tanggal_event >= NOW() 
         ORDER BY e.tanggal_event ASC 
-        LIMIT 3";
+        LIMIT 10";
 $result = $conn->query($sql);
 $event = [];
 
