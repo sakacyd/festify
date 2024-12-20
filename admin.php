@@ -86,7 +86,7 @@ $events = $conn->query("SELECT * FROM event");
                                 <input type="text" class="form-control" name="kota_venue" id="editKotaVenue" required>
                             </div>
                             <button type="submit" name="update_venue" class="btn btn-primary">Update Venue</button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteVenueModal" data-id="<?php echo $venue['id_venue']; ?>">Delete</button>
+                            <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteVenueModal" data-id="<?php echo $venue['id_venue']; ?>">Delete</button>
                         </form>
                     </div>
                 </div>
@@ -103,7 +103,7 @@ $events = $conn->query("SELECT * FROM event");
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="process_delete.php" method="POST">
+                    <form action="process_delete_venue.php" method="POST">
                         <div class="modal-body">
                             <p>Apakah Anda yakin ingin menghapus venue ini?</p>
                             <input type="hidden" name="id_venue" id="deleteVenueId">
@@ -184,6 +184,7 @@ $events = $conn->query("SELECT * FROM event");
         </form>
 
         <!-- Modal Edit Event -->
+        <!-- Modal Edit Event -->
         <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="editEventModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -216,9 +217,33 @@ $events = $conn->query("SELECT * FROM event");
                                 </select>
                             </div>
                             <button type="submit" name="update_event" class="btn btn-primary">Update Event</button>
-                            <button type="submit" name="delete_event" class="btn btn-danger float-right">Delete Event</button>
+                            <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteEventModal" data-id="<?php echo $event['id_event']; ?>">Delete</button>
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Hapus Event -->
+        <div class="modal fade" id="deleteEventModal" tabindex="-1" role="dialog" aria-labelledby="deleteEventModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteEventModalLabel">Hapus Event</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="process_delete_event.php" method="POST">
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus event ini?</p>
+                            <input type="hidden" name="id_event" id="deleteEventId"> <!-- Input hidden untuk ID Event -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                            <button type="submit" name="delete_event" class="btn btn-danger">Hapus</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -286,6 +311,17 @@ $events = $conn->query("SELECT * FROM event");
 
             // Debugging: Tampilkan ID di console
             console.log("ID Venue yang akan dihapus: " + idVenue);
+        });
+
+        // Mengisi ID Venue ke Modal Hapus
+        $('#deleteEventModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Tombol yang memicu modal
+            var idEvent = button.data('id'); // Ambil ID dari data-id atribut
+            var modal = $(this);
+            modal.find('#deleteEventId').val(idEvent);
+
+            // Debugging: Tampilkan ID di console
+            console.log("ID Event yang akan dihapus: " + idEvent);
         });
     </script>
 </body>
