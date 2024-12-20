@@ -123,9 +123,6 @@ $events = $conn->query("SELECT * FROM event");
                 <tr>
                     <th>Nama Event</th>
                     <th>Tanggal Event</th>
-                    <th>Deskripsi</th>
-                    <th>Harga</th>
-                    <th>Gambar Event</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -136,9 +133,6 @@ $events = $conn->query("SELECT * FROM event");
                     <tr>
                         <td><?php echo $event['nama_event']; ?></td>
                         <td><?php echo $event['tanggal_event']; ?></td>
-                        <td><?php echo $event['deskripsi']; ?></td>
-                        <td><?php echo $event['harga']; ?></td>
-                        <td><img src="<?php echo $event['gambar_event']; ?>" alt="Gambar Event" style="width:100px;height:auto;"></td>
                         <td>
                             <button class="btn btn-warning edit-event-btn" data-id="<?php echo $event['id_event']; ?>">Edit</button>
                         </td>
