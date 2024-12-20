@@ -1,7 +1,12 @@
 <?php
 
 // Ambil data event terdekat
-$sql = "SELECT * FROM event WHERE tanggal_event >= NOW() ORDER BY tanggal_event ASC LIMIT 3";
+$sql = "SELECT e.*, v.nama_venue 
+        FROM event e 
+        JOIN venue v ON e.id_venue = v.id_venue 
+        WHERE e.tanggal_event >= NOW() 
+        ORDER BY e.tanggal_event ASC 
+        LIMIT 3";
 $result = $conn->query($sql);
 $event = [];
 
