@@ -140,10 +140,7 @@ $events = $conn->query("SELECT * FROM event");
                         <td><?php echo $event['harga']; ?></td>
                         <td><img src="<?php echo $event['gambar_event']; ?>" alt="Gambar Event" style="width:100px;height:auto;"></td>
                         <td>
-                            <form action="process_delete_event.php" method="POST">
-                                <input type="hidden" name="id_event" value="<?php echo $event['id_event']; ?>">
-                                <button type="submit" name="delete_event" class="btn btn-danger">Hapus</button>
-                            </form>
+                            <button class="btn btn-warning edit-event-btn" data-id="<?php echo $event['id_event']; ?>">Edit</button>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -151,7 +148,7 @@ $events = $conn->query("SELECT * FROM event");
         </table>
         
         <h3>Tambah Event</h3>
-        <form method="POST" action="process_add_event.php" enctype="multipart/form-data">
+        <form method="POST" action="process_add_event.php">
             <div class="form-group">
                 <label for="nama_event">Nama Event</label>
                 <input type="text" class="form-control" name="nama_event" required>
@@ -170,19 +167,6 @@ $events = $conn->query("SELECT * FROM event");
                         <option value="<?php echo $venue['id_venue']; ?>"><?php echo $venue['nama_venue']; ?></option>
                     <?php endwhile; ?>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="deskripsi">Deskripsi</label>
-                <textarea class="form-control" name="deskripsi" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="harga">Harga Tiket</label>
-                <input type="number" class="form-control" name="harga" required>
-            </div>
-            <div class="form-group">
-                <label for="gambar_event">Gambar Event</label>
-                <input type="file" class="form-control" name="gambar_event" required>
-            </div>
             <button type="submit" name="submit_event" class="btn btn-primary">Tambah Event</button>
         </form>
 
