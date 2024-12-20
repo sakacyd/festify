@@ -122,7 +122,9 @@ $events = $conn->query("SELECT * FROM event");
             <thead>
                 <tr>
                     <th>Nama Event</th>
+                    <th>Deskripsi</th>
                     <th>Tanggal Event</th>
+                    <th>Harga Tiket</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -132,7 +134,9 @@ $events = $conn->query("SELECT * FROM event");
                 while ($event = $result->fetch_assoc()): ?>
                     <tr>
                         <td><?php echo $event['nama_event']; ?></td>
+                        <td><?php echo $event['deskripsi']; ?></td>
                         <td><?php echo $event['tanggal_event']; ?></td>
+                        <td><?php echo $event['harga_tiket']; ?></td>
                         <td>
                             <button class="btn btn-warning edit-event-btn" data-id="<?php echo $event['id_event']; ?>">Edit</button>
                         </td>
@@ -148,8 +152,16 @@ $events = $conn->query("SELECT * FROM event");
                 <input type="text" class="form-control" name="nama_event" required>
             </div>
             <div class="form-group">
+                <label for="deskripsi">Deskripsi</label>
+                <input type="textarea" class="form-control" name="deskripsi" required>
+            </div>
+            <div class="form-group">
                 <label for="tanggal_event">Tanggal Event</label>
                 <input type="date" class="form-control" name="tanggal_event" required>
+            </div>
+            <div class="form-group">
+                <label for="harga_tiket">Harga Tiket</label>
+                <input type="text" class="form-control" name="harga_tiket" required>
             </div>
             <div class="form-group">
                 <label for="id_venue">Nama Venue</label>
