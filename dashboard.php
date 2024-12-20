@@ -38,7 +38,7 @@ include 'header.php';
                     <h4>Navigation</h4>
                     <ul>
                         <li><a href="tickets.html"><i class="fa fa-ticket"></i> My Tickets</a></li>
-                        <li><a href="account.php"><i class="fa fa-user"></i> Account Settings</a></li>
+                        <li><a href="myaccount.php"><i class="fa fa-user"></i> Account Settings</a></li>
                         <li><a href="logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
                     </ul>
                 </div>
