@@ -25,86 +25,36 @@ include 'header.php';
           <h2>Tickets Page</h2>
         </div>
       </div>
-      <div class="col-lg-4">
-        <div class="ticket-item">
-          <div class="thumb">
-            <img src="assets/images/ticket-01.jpg" alt="">
-            <div class="price">
-              <span>1 ticket<br>from <em>Rp300.000</em></span>
+
+      <?php if (!empty($event)) { ?>
+        <?php foreach ($event as $concert) { ?>
+          <div class="col-lg-4">
+            <div class="ticket-item">
+              <div class="thumb">
+                <img src="<?php echo $concert['image']; ?>" alt="">
+                <div class="harga_tiket">
+                  <span>1 ticket<br>from <em><?php echo $concert['harga_tiket']; ?></em></span>
+                </div>
+              </div>
+              <div class="down-content">
+                <h4><?php echo $concert['nama_event']; ?></h4>
+                <ul>
+                  <li><i class="fa fa-calendar-o"></i> <?php echo date('d M Y', strtotime($concert['tanggal_event'])); ?></li>
+                  <li><i class="fa fa-map-marker"></i><?php echo $concert['nama_venue']; ?></li>
+                </ul>
+                <div class="main-dark-button">
+                  <a href="ticket-details.php?id=<?php echo $concert['id']; ?>">Purchase Tickets</a>  
+                </div>
+              </div>
             </div>
           </div>
-          <div class="down-content">
-            <h4>LaLaLa Festival</h4>
-            <ul>
-              <li><i class="fa fa-calendar-o"></i> Friday - Sunday, 23 - 25 August 2024</li>
-              <li><i class="fa fa-map-marker"></i>Jakarta International Expo, Jakarta</li>
-            </ul>
-            <div class="main-dark-button">
-              <a href="ticket-details-lalalafest.html">Purchase Tickets</a>
-            </div>
-          </div>
+        <?php } ?>
+      <?php } else { ?>
+        <div class="col-lg-12">
+          <p>Tidak ada event yang ditemukan.</p>
         </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="ticket-item">
-          <div class="thumb">
-            <img src="assets/images/ticket-02.jpg" alt="">
-            <div class="price">
-              <span>1 ticket<br>from <em>Rp350.000</em></span>
-            </div>
-          </div>
-          <div class="down-content">
-            <h4>Dieng Culture Festival</h4>
-            <ul>
-              <li><i class="fa fa-calendar-o"></i> Friday - Sunday, 23 - 25 August 2024</li>
-              <li><i class="fa fa-map-marker"></i>Desa Dieng Kulon, Banjarnegara</li>
-            </ul>
-            <div class="main-dark-button">
-              <a href="ticket-details-dieng.html">Purchase Tickets</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="ticket-item">
-          <div class="thumb">
-            <img src="assets/images/ticket-03.jpg" alt="">
-            <div class="price">
-              <span>1 ticket<br>from <em>Rp200.000</em></span>
-            </div>
-          </div>
-          <div class="down-content">
-            <h4>Nexfest</h4>
-            <ul>
-              <li><i class="fa fa-calendar-o"></i> Sunday, 25 August 2024</li>
-              <li><i class="fa fa-map-marker"></i>Pantai Carnaval Ancol, Jakarta</li>
-            </ul>
-            <div class="main-dark-button">
-              <a href="ticket-details-nexfest.html">Purchase Tickets</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="ticket-item">
-          <div class="thumb">
-            <img src="assets/images/ticket-04.jpg" alt="">
-            <div class="price">
-              <span>1 ticket<br>from <em>Rp150.000</em></span>
-            </div>
-          </div>
-          <div class="down-content">
-            <h4>Forestra</h4>
-            <ul>
-              <li><i class="fa fa-clock-o"></i> Saturday, 31 August 2024</li>
-              <li><i class="fa fa-map-marker"></i>Orchid Forest Cikole, Bandung</li>
-            </ul>
-            <div class="main-dark-button">
-              <a href="ticket-details-forestra.html">Purchase Tickets</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php } ?>
+
       <div class="col-lg-12">
         <div class="pagination">
           <ul>
