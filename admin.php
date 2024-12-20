@@ -121,26 +121,35 @@ $events = $conn->query("SELECT * FROM event");
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Nama Event</th>
-                    <th>Tanggal</th>
+                    <th>Tanggal Event</th>
+                    <th>Deskripsi</th>
+                    <th>Harga</th>
+                    <th>Gambar Event</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while ($event = $events->fetch_assoc()): ?>
+                <?php
+                $result = $conn->query("SELECT * FROM event");
+                while ($event = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo $event['id_event']; ?></td>
                         <td><?php echo $event['nama_event']; ?></td>
                         <td><?php echo $event['tanggal_event']; ?></td>
+                        <td><?php echo $event['deskripsi']; ?></td>
+                        <td><?php echo $event['harga']; ?></td>
+                        <td><img src="<?php echo $event['gambar_event']; ?>" alt="Gambar Event" style="width:100px;height:auto;"></td>
                         <td>
-                            <button class="btn btn-warning edit-event-btn" data-id="<?php echo $event['id_event']; ?>">Edit</button>
+                            <form action="process_delete_event.php" method="POST">
+                                <input type="hidden" name="id_event" value="<?php echo $event['id_event']; ?>">
+                                <button type="submit" name="delete_event" class="btn btn-danger">Hapus</button>
+                            </form>
                         </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
-
+        
         <h3>Tambah Event</h3>
         <form method="POST" action="process_add_event.php" enctype="multipart/form-data">
             <div class="form-group">
@@ -156,34 +165,27 @@ $events = $conn->query("SELECT * FROM event");
                 <select class="form-control" name="id_venue" required>
                     <option value="" disabled selected>Pilih Venue</option>
                     <?php
-                    // Ambil data venue untuk dropdown
                     $venues = $conn->query("SELECT * FROM venue");
-                    if ($venues->num_rows > 0) {
-                        while ($venue = $venues->fetch_assoc()): ?>
-                            <option value="<?php echo $venue['id_venue']; ?>"><?php echo $venue['nama_venue']; ?></option>
-                    <?php endwhile;
-                    } else {
-                        echo '<option value="">Tidak ada venue tersedia</option>';
-                    }
-                    ?>
+                    while ($venue = $venues->fetch_assoc()): ?>
+                        <option value="<?php echo $venue['id_venue']; ?>"><?php echo $venue['nama_venue']; ?></option>
+                    <?php endwhile; ?>
                 </select>
             </div>
             <div class="form-group">
-                <label for="deskripsi">Deskripsi Event</label>
+                <label for="deskripsi">Deskripsi</label>
                 <textarea class="form-control" name="deskripsi" required></textarea>
             </div>
             <div class="form-group">
-                <label for="harga_tiket">Harga Tiket</label>
-                <input type="number" class="form-control" name="harga_tiket" required>
+                <label for="harga">Harga Tiket</label>
+                <input type="number" class="form-control" name="harga" required>
             </div>
             <div class="form-group">
-                <label for="gambar_event">Upload Gambar Event</label>
-                <input type="file" class="form-control" name="gambar_event" accept="image/*" required>
+                <label for="gambar_event">Gambar Event</label>
+                <input type="file" class="form-control" name="gambar_event" required>
             </div>
             <button type="submit" name="submit_event" class="btn btn-primary">Tambah Event</button>
         </form>
 
-        <!-- Modal Edit Event -->
         <!-- Modal Edit Event -->
         <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="editEventModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
