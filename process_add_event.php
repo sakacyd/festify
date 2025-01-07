@@ -1,5 +1,4 @@
 <?php
-// process_add_event.php modifications
 session_start();
 include 'db_connect.php';
 

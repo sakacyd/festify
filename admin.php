@@ -10,7 +10,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 // Ambil data venue dan event untuk ditampilkan
-$venues = $conn->query("SELECT * FROM venue ORDER BY nama_venue");
+$venues = $conn->query("SELECT * FROM venue ORDER BY nama_venue ASC");
 $events = $conn->query("
     SELECT e.*, v.nama_venue, g.path_gambar 
     FROM event e
@@ -37,7 +37,6 @@ $events = $conn->query("
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Nama Venue</th>
                     <th>Kota Venue</th>
                     <th>Aksi</th>
@@ -46,7 +45,6 @@ $events = $conn->query("
             <tbody>
                 <?php while ($venue = $venues->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo $venue['id_venue']; ?></td>
                         <td><?php echo $venue['nama_venue']; ?></td>
                         <td><?php echo $venue['kota_venue']; ?></td>
                         <td>
@@ -92,7 +90,7 @@ $events = $conn->query("
                                 <input type="text" class="form-control" name="kota_venue" id="editKotaVenue" required>
                             </div>
                             <button type="submit" name="update_venue" class="btn btn-primary">Update Venue</button>
-                            <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteVenueModal" data-id="<?php echo $venue['id_venue']; ?>">Delete</button>
+                            <button type="button" class="btn btn-danger float-right delete-venue-btn" data-toggle="modal" data-target="#deleteVenueModal" data-id="<?php echo $venue['id_venue']; ?>">Delete</button>
                         </form>
                     </div>
                 </div>
@@ -111,7 +109,7 @@ $events = $conn->query("
                     </div>
                     <form action="process_delete_venue.php" method="POST">
                         <div class="modal-body">
-                            <p>Apakah Anda yakin ingin menghapus venue ini?</p>
+                            <p>Apakah Anda yakin ingin menghapus venue: <strong><span id="venueNameToDelete"></span></strong>?</p>
                             <input type="hidden" name="id_venue" id="deleteVenueId">
                         </div>
                         <div class="modal-footer">
@@ -127,7 +125,6 @@ $events = $conn->query("
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID Event</th>
                     <th>Nama Event</th>
                     <th>Deskripsi</th>
                     <th>Tanggal Event</th>
@@ -140,7 +137,6 @@ $events = $conn->query("
             <tbody>
                 <?php while ($event = $events->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo $event['id_event']; ?></td>
                         <td data-venue-id="<?php echo $event['id_venue']; ?>"><?php echo $event['nama_event']; ?></td>
                         <td><?php echo $event['deskripsi']; ?></td>
                         <td><?php echo $event['tanggal_event']; ?></td>
@@ -246,7 +242,7 @@ $events = $conn->query("
                                 </div>
                             </div>
                             <button type="submit" name="update_event" class="btn btn-primary">Update Event</button>
-                            <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteEventModal" data-id="<?php echo $event['id_event']; ?>">Delete</button>
+                            <button type="button" class="btn btn-danger float-right delete-event-btn" data-toggle="modal" data-target="#deleteEventModal" data-id="<?php echo $event['id_event']; ?>">Delete</button>
                         </form>
                     </div>
                 </div>
@@ -265,8 +261,8 @@ $events = $conn->query("
                     </div>
                     <form action="process_delete_event.php" method="POST">
                         <div class="modal-body">
-                            <p>Apakah Anda yakin ingin menghapus event ini?</p>
-                            <input type="hidden" name="id_event" id="deleteEventId"> <!-- Input hidden untuk ID Event -->
+                            <p>Apakah Anda yakin ingin menghapus event: <strong><span id="eventNameToDelete"></span></strong>?</p>
+                            <input type="hidden" name="id_event" id="deleteEventId">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
@@ -304,11 +300,18 @@ $events = $conn->query("
 
     <script>
         $(document).ready(function() {
+            // Variabel global untuk menyimpan ID venue dan event
+            var currentVenueId = null;
+            var currentEventId = null;
+
             // Ketika tombol Edit Venue diklik
             $('.edit-venue-btn').click(function() {
                 var venueId = $(this).data('id');
-                var venueName = $(this).closest('tr').find('td:nth-child(2)').text();
-                var venueCity = $(this).closest('tr').find('td:nth-child(3)').text();
+                var venueName = $(this).closest('tr').find('td:nth-child(1)').text();
+                var venueCity = $(this).closest('tr').find('td:nth-child(2)').text();
+
+                // Simpan ID venue ke variabel global
+                currentVenueId = venueId;
 
                 $('#editVenueId').val(venueId);
                 $('#editNamaVenue').val(venueName);
@@ -316,15 +319,31 @@ $events = $conn->query("
                 $('#editVenueModal').modal('show');
             });
 
+            // Ketika tombol Delete di modal edit venue diklik
+            $('#editVenueModal').on('click', '.delete-venue-btn', function() {
+                // Ambil nama venue dari modal edit
+                var venueName = $('#editNamaVenue').val();
+
+                // Isi modal hapus dengan data venue
+                $('#deleteVenueId').val(currentVenueId); // Gunakan ID venue yang disimpan di variabel global
+                $('#venueNameToDelete').text(venueName);
+
+                // Tampilkan modal hapus
+                $('#deleteVenueModal').modal('show');
+            });
+
             // Ketika tombol Edit Event diklik
             $('.edit-event-btn').click(function() {
                 var eventId = $(this).data('id');
-                var eventName = $(this).closest('tr').find('td:nth-child(2)').text();
-                var eventDescription = $(this).closest('tr').find('td:nth-child(3)').text();
-                var eventDate = $(this).closest('tr').find('td:nth-child(4)').text();
-                var ticketPrice = $(this).closest('tr').find('td:nth-child(5)').text();
-                var venueId = $(this).closest('tr').find('td:nth-child(2)').data('venue-id');
-                var imgSrc = $(this).closest('tr').find('td:nth-child(7) img').attr('src');
+                var eventName = $(this).closest('tr').find('td:nth-child(1)').text();
+                var eventDescription = $(this).closest('tr').find('td:nth-child(2)').text();
+                var eventDate = $(this).closest('tr').find('td:nth-child(3)').text();
+                var ticketPrice = $(this).closest('tr').find('td:nth-child(4)').text();
+                var venueId = $(this).closest('tr').find('td:nth-child(1)').data('venue-id');
+                var imgSrc = $(this).closest('tr').find('td:nth-child(6) img').attr('src');
+
+                // Simpan ID event ke variabel global
+                currentEventId = eventId;
 
                 // Isi form modal dengan data event
                 $('#editEventId').val(eventId);
@@ -339,28 +358,39 @@ $events = $conn->query("
                 // Tampilkan modal
                 $('#editEventModal').modal('show');
             });
-        });
 
-        // Mengisi ID Venue ke Modal Hapus
-        $('#deleteVenueModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Tombol yang memicu modal
-            var idVenue = button.data('id'); // Ambil ID dari data-id atribut
-            var modal = $(this);
-            modal.find('#deleteVenueId').val(idVenue);
+            // Ketika tombol Delete di modal edit event diklik
+            $('#editEventModal').on('click', '.delete-event-btn', function() {
+                // Ambil nama event dari modal edit
+                var eventName = $('#editNamaEvent').val();
 
-            // Debugging: Tampilkan ID di console
-            console.log("ID Venue yang akan dihapus: " + idVenue);
-        });
+                // Isi modal hapus dengan data event
+                $('#deleteEventId').val(currentEventId); // Gunakan ID event yang disimpan di variabel global
+                $('#eventNameToDelete').text(eventName);
 
-        // Mengisi ID Venue ke Modal Hapus
-        $('#deleteEventModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Tombol yang memicu modal
-            var idEvent = button.data('id'); // Ambil ID dari data-id atribut
-            var modal = $(this);
-            modal.find('#deleteEventId').val(idEvent);
+                // Tampilkan modal hapus
+                $('#deleteEventModal').modal('show');
+            });
 
-            // Debugging: Tampilkan ID di console
-            console.log("ID Event yang akan dihapus: " + idEvent);
+            // Handler untuk tombol delete venue di halaman utama
+            $('.delete-venue-btn').click(function() {
+                var venueId = $(this).data('id');
+                var venueName = $(this).closest('tr').find('td:eq(1)').text(); // Mengambil nama venue dari baris tabel
+
+                $('#deleteVenueId').val(venueId);
+                $('#venueNameToDelete').text(venueName);
+                $('#deleteVenueModal').modal('show');
+            });
+
+            // Handler untuk tombol delete event di halaman utama
+            $('.delete-event-btn').click(function() {
+                var eventId = $(this).data('id');
+                var eventName = $(this).closest(' tr').find('td:eq(1)').text(); // Mengambil nama event dari baris tabel
+
+                $('#deleteEventId').val(eventId);
+                $('#eventNameToDelete').text(eventName);
+                $('#deleteEventModal').modal('show');
+            });
         });
     </script>
 </body>
