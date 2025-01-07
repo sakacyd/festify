@@ -9,24 +9,24 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Ambil informasi pengguna dari sesi
-$user_id = $_SESSION['user']['id'];
-$user_name = $_SESSION['user']['name'];
+$user_id = $_SESSION['user']['id_user'];
+$user_name = $_SESSION['user']['nama_lengkap'];
 $user_email = $_SESSION['user']['email'];
 
 // Proses pembaruan data pengguna
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $new_name = trim($_POST['name']);
+    $new_name = trim($_POST['nama_lengkap']);
     $new_email = trim($_POST['email']);
     $new_password = trim($_POST['password']);
 
     if (!empty($new_name) && !empty($new_email)) {
         // Update nama dan email
-        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE akun SET nama_lengkap = ?, email = ? WHERE id_akun = ?");
         $stmt->bind_param("ssi", $new_name, $new_email, $user_id);
 
         if ($stmt->execute()) {
             // Perbarui sesi pengguna
-            $_SESSION['user']['name'] = $new_name;
+            $_SESSION['user']['nama_lengkap'] = $new_name;
             $_SESSION['user']['email'] = $new_email;
 
             $_SESSION['success'] = "Account updated successfully.";
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($new_password)) {
         $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE akun SET password = ? WHERE id_akun = ?");
         $stmt->bind_param("si", $hashed_password, $user_id);
 
         if ($stmt->execute()) {
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <form action="myaccount.php" method="POST" class="form-box">
                         <div class="form-group">
                             <label for="name">Full Name</label>
-                            <input type="text" name="name" id="name" class="form-control" value="<?php echo htmlspecialchars($user_name); ?>" required>
+                            <input type="text" name="nama_lengkap" id="name" class="form-control" value="<?php echo htmlspecialchars($user_name); ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email Address</label>
