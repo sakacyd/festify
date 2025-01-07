@@ -10,8 +10,14 @@ if (!isset($_SESSION['admin_logged_in'])) {
 }
 
 // Ambil data venue dan event untuk ditampilkan
-$venues = $conn->query("SELECT * FROM venue");
-$events = $conn->query("SELECT * FROM event");
+$venues = $conn->query("SELECT * FROM venue ORDER BY nama_venue");
+$events = $conn->query("
+    SELECT e.*, v.nama_venue, g.path_gambar 
+    FROM event e
+    LEFT JOIN venue v ON e.id_venue = v.id_venue
+    LEFT JOIN gambar g ON e.gambar_event = g.id_gambar
+    ORDER BY e.tanggal_event
+");
 ?>
 
 <div class="page-heading-shows-events">
@@ -121,22 +127,32 @@ $events = $conn->query("SELECT * FROM event");
         <table class="table">
             <thead>
                 <tr>
+                    <th>ID Event</th>
                     <th>Nama Event</th>
                     <th>Deskripsi</th>
                     <th>Tanggal Event</th>
                     <th>Harga Tiket</th>
+                    <th>Lokasi Venue</th>
+                    <th>Gambar Event</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                $result = $conn->query("SELECT * FROM event");
-                while ($event = $result->fetch_assoc()): ?>
+                <?php while ($event = $events->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo $event['nama_event']; ?></td>
+                        <td><?php echo $event['id_event']; ?></td>
+                        <td data-venue-id="<?php echo $event['id_venue']; ?>"><?php echo $event['nama_event']; ?></td>
                         <td><?php echo $event['deskripsi']; ?></td>
                         <td><?php echo $event['tanggal_event']; ?></td>
                         <td><?php echo $event['harga_tiket']; ?></td>
+                        <td><?php echo $event['nama_venue']; ?></td>
+                        <td>
+                            <?php if ($event['path_gambar']): ?>
+                                <img src="<?php echo $event['path_gambar']; ?>" style="max-width: 100px;">
+                            <?php else: ?>
+                                No image
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <button class="btn btn-warning edit-event-btn" data-id="<?php echo $event['id_event']; ?>">Edit</button>
                         </td>
@@ -144,9 +160,9 @@ $events = $conn->query("SELECT * FROM event");
                 <?php endwhile; ?>
             </tbody>
         </table>
-        
+
         <h3>Tambah Event</h3>
-        <form method="POST" action="process_add_event.php">
+        <form method="POST" action="process_add_event.php" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="nama_event">Nama Event</label>
                 <input type="text" class="form-control" name="nama_event" required>
@@ -173,6 +189,11 @@ $events = $conn->query("SELECT * FROM event");
                         <option value="<?php echo $venue['id_venue']; ?>"><?php echo $venue['nama_venue']; ?></option>
                     <?php endwhile; ?>
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="gambar_event">Gambar Event</label>
+                <input type="file" class="form-control-file" name="gambar_event" required>
+            </div>
             <button type="submit" name="submit_event" class="btn btn-primary">Tambah Event</button>
         </form>
 
@@ -187,15 +208,23 @@ $events = $conn->query("SELECT * FROM event");
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form id="editEventForm" method="POST" action="process_edit_event.php">
+                        <form id="editEventForm" method="POST" action="process_edit_event.php" enctype="multipart/form-data">
                             <input type="hidden" name="id_event" id="editEventId">
                             <div class="form-group">
                                 <label for="editNamaEvent">Nama Event</label>
                                 <input type="text" class="form-control" name="nama_event" id="editNamaEvent" required>
                             </div>
                             <div class="form-group">
+                                <label for="editDeskripsi">Deskripsi</label>
+                                <input type="textarea" class="form-control" name="deskripsi" id="editDeskripsi" required>
+                            </div>
+                            <div class="form-group">
                                 <label for="editTanggalEvent">Tanggal Event</label>
                                 <input type="date" class="form-control" name="tanggal_event" id="editTanggalEvent" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editHargaTiket">Harga Tiket</label>
+                                <input type="text" class="form-control" name="harga_tiket" id="editHargaTiket" required>
                             </div>
                             <div class="form-group">
                                 <label for="editIdVenue">Nama Venue</label>
@@ -207,6 +236,14 @@ $events = $conn->query("SELECT * FROM event");
                                         <option value="<?php echo $venue['id_venue']; ?>"><?php echo $venue['nama_venue']; ?></option>
                                     <?php endwhile; ?>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editGambarEvent">Gambar Event</label>
+                                <input type="file" class="form-control-file" name="gambar_event" id="editGambarEvent">
+                                <div id="currentImage" class="mt-2">
+                                    <p>Current image:</p>
+                                    <img id="previewCurrentImage" src="" style="max-width: 200px;">
+                                </div>
                             </div>
                             <button type="submit" name="update_event" class="btn btn-primary">Update Event</button>
                             <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#deleteEventModal" data-id="<?php echo $event['id_event']; ?>">Delete</button>
@@ -271,7 +308,7 @@ $events = $conn->query("SELECT * FROM event");
             $('.edit-venue-btn').click(function() {
                 var venueId = $(this).data('id');
                 var venueName = $(this).closest('tr').find('td:nth-child(2)').text();
-                var venueCity = $(this).closest('tr').find('td :nth-child(3)').text();
+                var venueCity = $(this).closest('tr').find('td:nth-child(3)').text();
 
                 $('#editVenueId').val(venueId);
                 $('#editNamaVenue').val(venueName);
@@ -283,13 +320,23 @@ $events = $conn->query("SELECT * FROM event");
             $('.edit-event-btn').click(function() {
                 var eventId = $(this).data('id');
                 var eventName = $(this).closest('tr').find('td:nth-child(2)').text();
-                var eventDate = $(this).closest('tr').find('td:nth-child(3)').text();
-                var venueId = $(this).closest('tr').find('td:nth-child(4)').data('venue-id'); // Pastikan venue ID disimpan di data atribut
+                var eventDescription = $(this).closest('tr').find('td:nth-child(3)').text();
+                var eventDate = $(this).closest('tr').find('td:nth-child(4)').text();
+                var ticketPrice = $(this).closest('tr').find('td:nth-child(5)').text();
+                var venueId = $(this).closest('tr').find('td:nth-child(2)').data('venue-id');
+                var imgSrc = $(this).closest('tr').find('td:nth-child(7) img').attr('src');
 
+                // Isi form modal dengan data event
                 $('#editEventId').val(eventId);
                 $('#editNamaEvent').val(eventName);
+                $('#editDeskripsi').val(eventDescription);
                 $('#editTanggalEvent').val(eventDate);
+                $('#editHargaTiket').val(ticketPrice);
+
+                // Set nilai default dropdown Nama Venue
                 $('#editIdVenue').val(venueId);
+
+                // Tampilkan modal
                 $('#editEventModal').modal('show');
             });
         });
