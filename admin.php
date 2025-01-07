@@ -298,11 +298,11 @@ $events = $conn->query("SELECT * FROM event");
             // Ketika tombol Edit Event diklik
             $('.edit-event-btn').click(function() {
                 var eventId = $(this).data('id');
-                var eventName = $(this).closest('tr').find('td:nth-child(1)').text();
-                var eventDescription = $(this).closest('tr').find('td:nth-child(2)').text();
-                var eventDate = $(this).closest('tr').find('td:nth-child(3)').text();
-                var ticketPrice = $(this).closest('tr').find('td:nth-child(4)').text();
-                var venueId = $(this).closest('tr').find('td:nth-child(1)').data('venue-id'); // Ambil venue ID dari atribut data
+                var eventName = $(this).closest('tr').find('td:nth-child(2)').text();
+                var eventDescription = $(this).closest('tr').find('td:nth-child(3)').text();
+                var eventDate = $(this).closest('tr').find('td:nth-child(4)').text();
+                var ticketPrice = $(this).closest('tr').find('td:nth-child(5)').text();
+                var venueId = $(this).closest('tr').find('td:nth-child(2)').data('venue-id'); // Ambil venue ID dari atribut data
 
                 // Isi form modal dengan data event
                 $('#editEventId').val(eventId);
