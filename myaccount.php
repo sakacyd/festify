@@ -1,6 +1,5 @@
 <?php
 session_start();
-require 'db.php'; // Pastikan koneksi database tersedia
 
 // Pastikan pengguna sudah login
 if (!isset($_SESSION['user'])) {
@@ -54,93 +53,84 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header("Location: myaccount.php");
     exit();
 }
+
+include 'db_connect.php';
+include 'event-terdekat.php';
+include 'head.php';
+include 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet" />
-    <title>My Account - Festify</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css" />
-    <link rel="stylesheet" type="text/css" href="assets/css/tooplate-artxibition.css" />
-</head>
-<body>
-    <!-- Header -->
-    <header class="header-area header-sticky">
-        <div class="container">
-            <nav class="main-nav">
-                <a href="dashboard.php" class="logo">Fest<em>ify</em></a>
-                <ul class="nav">
-                    <li><a href="dashboard.php">Home</a></li>
-                    <li><a href="tickets.html">Tickets</a></li>
-                    <li><a href="myaccount.php" class="active">My Account</a></li>
-                    <li><a href="logout.php">Logout</a></li>
-                </ul>
-                <a class="menu-trigger">
-                    <span>Menu</span>
-                </a>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Account Page Content -->
-    <div class="page-heading-about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2>My Account</h2>
-                    <span>Manage your personal information and account settings.</span>
-                </div>
+<!-- Account Page Content -->
+<div class="page-heading-about">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>My Account</h2>
+                <span>Manage your personal information and account settings.</span>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="account-settings">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <!-- Success/Error Messages -->
-                    <?php
-                    if (isset($_SESSION['success'])) {
-                        echo "<div class='alert alert-success'>" . $_SESSION['success'] . "</div>";
-                        unset($_SESSION['success']);
-                    }
-                    if (isset($_SESSION['error'])) {
-                        echo "<div class='alert alert-danger'>" . $_SESSION['error'] . "</div>";
-                        unset($_SESSION['error']);
-                    }
-                    ?>
+<div class="account-settings">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <!-- Success/Error Messages -->
+                <?php
+                if (isset($_SESSION['success'])) {
+                    echo "<div class='alert alert-success'>" . $_SESSION['success'] . "</div>";
+                    unset($_SESSION['success']);
+                }
+                if (isset($_SESSION['error'])) {
+                    echo "<div class='alert alert-danger'>" . $_SESSION['error'] . "</div>";
+                    unset($_SESSION['error']);
+                }
+                ?>
 
-                    <form action="myaccount.php" method="POST" class="form-box">
-                        <div class="form-group">
-                            <label for="name">Full Name</label>
-                            <input type="text" name="nama_lengkap" id="name" class="form-control" value="<?php echo htmlspecialchars($user_name); ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" name="email" id="email" class="form-control" value="<?php echo htmlspecialchars($user_email); ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">New Password</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Leave blank to keep current password">
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Update Account</button>
-                    </form>
-                </div>
+                <form action="myaccount.php" method="POST" class="form-box">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" name="nama_lengkap" id="name" class="form-control" value="<?php echo htmlspecialchars($user_name); ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" name="email" id="email" class="form-control" value="<?php echo htmlspecialchars($user_email); ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">New Password</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Leave blank to keep current password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Update Account</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p class="text-center">Copyright &copy; 2024 Festify. All Rights Reserved.</p>
-        </div>
-    </footer>
+<!-- *** Footer *** -->
+<?php
+include 'footer.php';
+?>
 
-    <script src="assets/js/jquery-2.1.0.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
+<!-- jQuery -->
+<script src="assets/js/jquery-2.1.0.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="assets/js/popper.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+
+<!-- Plugins -->
+<script src="assets/js/scrollreveal.min.js"></script>
+<script src="assets/js/waypoints.min.js"></script>
+<script src="assets/js/jquery.counterup.min.js"></script>
+<script src="assets/js/imgfix.min.js"></script>
+<script src="assets/js/mixitup.js"></script>
+<script src="assets/js/accordions.js"></script>
+<script src="assets/js/owl-carousel.js"></script>
+
+<!-- Global Init -->
+<script src="assets/js/custom.js"></script>
 </body>
+
 </html>
